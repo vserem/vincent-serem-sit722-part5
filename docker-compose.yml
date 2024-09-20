@@ -1,1 +1,22 @@
-# Your Solution
+version: "3"
+services:
+  book-catalog:
+    build:
+      context: ./book_catalog
+      dockerfile: Dockerfile
+    image: ${CONTAINER_REGISTRY}/book-catalog
+    container_name: book_catalog
+    ports:
+      - 8001:8001
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+  inventory:
+    build:
+      context: ./inventory_management
+      dockerfile: Dockerfile
+    image: ${CONTAINER_REGISTRY}/inventory-management
+    container_name: inventory_management
+    ports:
+      - 8002:8002
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
