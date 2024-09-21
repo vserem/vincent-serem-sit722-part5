@@ -82,7 +82,12 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      # Checks that all Terraform configuration files adhere to a canonical format
+      # Import the existing Azure Resource Group into Terraform state
+      - name: Import Resource Group
+        run: terraform import azurerm_resource_group.deakinuni "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/LibraryMicroservice"
+        continue-on-error: true
+
+        # Checks that all Terraform configuration files adhere to a canonical format
       - name: Terraform Format
         run: terraform fmt -check
 
@@ -101,7 +106,7 @@ jobs:
         run: |
           echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
           echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
-          echo ""REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
+          echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
 
       # Trigger deployment workflow
       - name: Trigger Deployment Workflow
