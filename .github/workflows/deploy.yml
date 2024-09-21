@@ -29,24 +29,20 @@ jobs:
 
       - name: Azure CLI script
         uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az account show
 
-        # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      # - name: Build images
+      #   run: ./scripts/build-image.sh
+
+      # - name: Push images
+      #   run: ./scripts/push-image.sh
+
+      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         run: terraform init
 
       # Checks that all Terraform configuration files adhere to a canonical format
       - name: Terraform Format
         run: terraform fmt -check
-
-      - name: Terraform Plan
-        run: terraform plan
-
-      - name: Refresh Terraform
-        run: terraform refresh
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
