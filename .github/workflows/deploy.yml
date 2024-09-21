@@ -59,6 +59,9 @@ jobs:
       #     echo "ACR_USERNAME=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
       #     echo "ACR_PASSWORD=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
       # Use environment variables from Terraform output to log in to ACR
+      - name: Setup kubernetes cli
+        run: kubectl version
+
       - name: Log in to ACR
         run: az acr login --name LibraryMicroservice
 
