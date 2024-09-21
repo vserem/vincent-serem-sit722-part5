@@ -82,9 +82,12 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      # Import the existing Azure Resource Group into Terraform state
-      - name: Import Resource Group
-        run: terraform import azurerm_resource_group.deakinuni "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/LibraryMicroservice"
+      # Import the existing Azure Resources into Terraform state
+      - name: Import Resources
+        run: |
+          terraform import azurerm_resource_group.deakinuni "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/LibraryMicroservice"
+          terraform import azurerm_kubernetes_cluster.cluster "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/LibraryMicroservice/providers/Microsoft.ContainerService/managedClusters/LibraryMicroservice"
+          terraform import azurerm_container_registry.container_registry "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/LibraryMicroservice/providers/Microsoft.ContainerRegistry/registries/LibraryMicroservice"
         continue-on-error: true
 
         # Checks that all Terraform configuration files adhere to a canonical format
