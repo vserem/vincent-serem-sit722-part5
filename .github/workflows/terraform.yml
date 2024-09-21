@@ -82,8 +82,8 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name:  Get 
-      --output json --query
+      - name: Get role assignment ID
+        run: echo "ROLE_ASSIGNMENT_ID=$(az role assignment list --assignee odl_user_1401471@cloudlabs4deakin.onmicrosoft.com --output json --query [0].id)" >> $GITHUB_ENV
 
       # Import the existing Azure Resources into Terraform state
       - name: Import Resources
