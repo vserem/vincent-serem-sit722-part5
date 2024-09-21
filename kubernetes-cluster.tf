@@ -15,6 +15,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     vm_size    = "Standard_B2s"
   }
 
+
   #
   # Instead of creating a service principle have the system figure this out.
   #
