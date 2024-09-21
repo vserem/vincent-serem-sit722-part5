@@ -22,7 +22,20 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
-      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+        # Capture ACR login server, username, and password from Terraform output
+      - name: Capture Terraform Outputs
+        id: acr_outputs
+        run: |
+          echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
+          echo "ACR_USERNAME=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
+          echo "ACR_PASSWORD=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
+
+        # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         run: terraform init
 
@@ -30,13 +43,13 @@ jobs:
       - name: Terraform Format
         run: terraform fmt -check
 
-      - name: Azure login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
+
+      # Use environment variables from Terraform output to log in to ACR
+      - name: Log in to ACR
+        run: echo ${{ env.ACR_PASSWORD }} | docker login ${{ env.ACR_LOGIN_SERVER }} -u ${{ env.ACR_USERNAME }} --password-stdin
 
         # On push to "main", build or change infrastructure according to Terraform configuration files
         # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-      # - name: Terraform Apply
-      #   if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
-      #   run: terraform apply -auto-approve -input=false
