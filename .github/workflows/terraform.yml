@@ -114,6 +114,15 @@ jobs:
       - name: Building Images
         run: |
           echo "CONTAINER_REGISTRY = ${{ needs.terraform.outputs.container_registry }}"
+
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Log in to ACR
+        run: az acr login --name LibraryMicroservice
+
   deploy:
     name: "Deploy"
     runs-on: ubuntu-latest
