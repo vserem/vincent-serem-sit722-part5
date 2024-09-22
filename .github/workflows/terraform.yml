@@ -116,10 +116,12 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Set Credentials
         run: |
+          acr_registry=(az acr list --query [0].loginServer)
           echo "VERSION=${{github.sha}}" >> $GITHUB_ENV
-          echo "CONTAINER_REGISTRY=$(az acr list --query [0].loginServer)" >> $GITHUB_ENV
+          echo "CONTAINER_REGISTRY=$acr_registry" >> $GITHUB_ENV
           echo "Getting Set variables...."
           echo "$CONTAINER_REGISTRY"
           echo "$VERSION"
