@@ -95,7 +95,7 @@ jobs:
 
       - name: Set Secrets
         run: |
-          gh auth login
+          gh auth login --with-token
 
       # Capture Terraform Output for ACR Credentials
       - name: Get ACR Credentials
