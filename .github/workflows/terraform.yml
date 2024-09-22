@@ -122,6 +122,7 @@ jobs:
       - name: Building Images
         run: |
           echo "$(pwd)"
+          echo "$(ls -a)"
           chmod +x ./scripts/build-image.sh
           bash ./scripts/build-image.sh
         env:
