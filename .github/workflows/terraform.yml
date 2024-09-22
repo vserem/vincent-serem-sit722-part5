@@ -97,9 +97,10 @@ jobs:
       - name: Get ACR Credentials
         id: acr_creds
         run: |
-          echo "::set-output name=container_registry::$(terraform output -raw acr_login_server)"
-          echo "::set-output name=acr_admin_username::=$(terraform output -raw acr_admin_username)"
-          echo "::set-output name=acr_admin_password::=$(terraform output -raw acr_admin_password)"
+          echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
+          echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
+          echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
+
   build:
     name: "Build"
     runs-on: ubuntu-latest
@@ -111,17 +112,17 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: Building Images
-        run: |
-          echo "CONTAINER_REGISTRY = ${{ needs.terraform.outputs.container_registry }}"
-
       - name: Azure login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Log in to ACR
-        run: az acr login --name LibraryMicroservice
+      - name: Building Images
+        env:
+          VERSION: latest
+        run: |
+          echo "CONTAINER_REGISTRY = $CONTAINER_REGISTRY"
+          ./scripts/build-image.sh
 
   deploy:
     name: "Deploy"
@@ -135,6 +136,4 @@ jobs:
         shell: bash
     steps:
       - name: Deploy
-        run: |
-          echo "Deploying to Azure"
-          echo "USERNAME = ${{ needs.terraform.outputs.acr_admin_username }}"
+        run: echo "Deploying to Azure"
