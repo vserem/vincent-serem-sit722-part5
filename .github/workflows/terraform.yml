@@ -71,9 +71,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-          terraform_wrapper: false
 
       - name: Azure login
         uses: azure/login@v1
@@ -95,7 +93,8 @@ jobs:
 
       - name: Set Secrets
         run: |
-          gh auth login --with-token
+          echo "$GITHUB_TOKEN" | gh auth login --with-token
+          echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)"
 
       # Capture Terraform Output for ACR Credentials
       - name: Get ACR Credentials
