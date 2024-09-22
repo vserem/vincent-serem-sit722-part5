@@ -131,6 +131,7 @@ jobs:
           bash ./scripts/build-image.sh
         env:
           CONTAINER_REGISTRY: ${{secrets.CONTAINER_REGISTRY}}
+          VERSION: ${{github.sha}}
 
   deploy:
     name: "Deploy"
