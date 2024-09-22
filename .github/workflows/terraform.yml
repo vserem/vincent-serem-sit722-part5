@@ -49,7 +49,7 @@ on:
     branches: ["main"]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   terraform:
@@ -119,10 +119,11 @@ jobs:
 
       - name: Building Images
         env:
-          VERSION: latest
+          VERSION: ${{github.sha}}
+          CONTAINER_REGISTRY: $(az acr list --query [0].loginServer)
         run: |
           echo "CONTAINER_REGISTRY = $CONTAINER_REGISTRY"
-          scripts/build-image.sh
+          bash ./scripts/build-image.sh
 
   deploy:
     name: "Deploy"

@@ -16,4 +16,4 @@ set -u # or set -o nounset
 : "$VERSION"
 
 docker build -f book_catalog/Dockerfile -t $CONTAINER_REGISTRY/book-catalog:latest book_catalog
-docker build -f inventory_management/Dockerfile -t $CONTAINER_REGISTRY/book-catalog:latest inventory_management
+docker build -f inventory_management/Dockerfile -t $CONTAINER_REGISTRY/inventory-management:latest inventory_management
