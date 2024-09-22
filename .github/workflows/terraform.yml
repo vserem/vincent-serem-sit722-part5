@@ -131,10 +131,12 @@ jobs:
 
       - name: Building Images
         run: |
+          chmod +x ./scripts/build-image.sh
           ./scripts/build-image.sh
 
       - name: Push Images
         run: |
+          chmod +x ./scripts/push-image.sh
           ./scripts/push-image.sh
 
   deploy:
