@@ -123,8 +123,8 @@ jobs:
           echo "VERSION=${{github.sha}}" >> $GITHUB_ENV
           echo "CONTAINER_REGISTRY=$acr_registry" >> $GITHUB_ENV
           echo "Getting Set variables...."
-          echo "$CONTAINER_REGISTRY"
-          echo "$VERSION"
+          echo "${{CONTAINER_REGISTRY}}"
+          echo "${{VERSION}}"
 
       - name: Authenticate Container Registry
         run: az acr login --name $CONTAINER_REGISTRY
