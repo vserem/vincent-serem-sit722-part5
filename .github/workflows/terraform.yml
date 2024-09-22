@@ -97,9 +97,9 @@ jobs:
       - name: Get ACR Credentials
         id: acr_creds
         run: |
-          echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
-        # echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
-        # echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
+          echo "::set-output name=container_registry::$(terraform output -raw acr_login_server)"
+          echo "::set-output name=acr_admin_username::=$(terraform output -raw acr_admin_username)"
+          echo "::set-output name=acr_admin_password::=$(terraform output -raw acr_admin_password)"
   build:
     name: "Build"
     runs-on: ubuntu-latest
@@ -113,7 +113,7 @@ jobs:
     steps:
       - name: Building Images
         run: |
-          echo "CONTAINER_REGISTRY = ${{env.CONTAINER_REGISTRY}}"
+          echo "CONTAINER_REGISTRY = ${{ needs.terraform.outputs.container_registry }}"
   deploy:
     name: "Deploy"
     runs-on: ubuntu-latest
@@ -126,4 +126,6 @@ jobs:
         shell: bash
     steps:
       - name: Deploy
-        run: echo "Deploying to Azure"
+        run: |
+          echo "Deploying to Azure"
+          echo "USERNAME = ${{ needs.terraform.outputs.acr_admin_username }}"
