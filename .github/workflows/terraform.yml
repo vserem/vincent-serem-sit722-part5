@@ -121,8 +121,11 @@ jobs:
 
       - name: Building Images
         run: |
-          echo "CONTAINER_REGISTRY = $CONTAINER_REGISTRY" 
+          echo "$(pwd)"
+          chmod +x ./scripts/build-image.sh
           bash ./scripts/build-image.sh
+        env:
+          CONTAINER_REGISTRY: ${{secrets.CONTAINER_REGISTRY}}
 
   deploy:
     name: "Deploy"
