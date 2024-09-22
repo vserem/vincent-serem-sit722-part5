@@ -93,6 +93,10 @@ jobs:
       # - name: Terraform Apply
       #   run: terraform apply -auto-approve -input=false
 
+      - name: Set Secrets
+        run: |
+          gh auth login
+
       # Capture Terraform Output for ACR Credentials
       - name: Get ACR Credentials
         id: acr_creds
