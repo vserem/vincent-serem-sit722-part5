@@ -122,7 +122,7 @@ jobs:
           VERSION: latest
         run: |
           echo "CONTAINER_REGISTRY = $CONTAINER_REGISTRY"
-          ./scripts/build-image.sh
+          scripts/build-image.sh
 
   deploy:
     name: "Deploy"
