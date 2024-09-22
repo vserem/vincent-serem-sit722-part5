@@ -55,7 +55,6 @@ jobs:
   terraform:
     name: "Terraform"
     runs-on: ubuntu-latest
-    environment: production
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -72,6 +71,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          terraform_wrapper: false
 
       - name: Azure login
         uses: azure/login@v1
@@ -93,6 +93,7 @@ jobs:
 
       - name: Set Secrets
         run: |
+          echo "$GITHUB_TOKEN"
           echo "$GITHUB_TOKEN" | gh auth login --with-token
           echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)"
 
@@ -107,7 +108,6 @@ jobs:
   build:
     name: "Build"
     runs-on: ubuntu-latest
-    environment: production
     needs: terraform
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
@@ -141,7 +141,6 @@ jobs:
   deploy:
     name: "Deploy"
     runs-on: ubuntu-latest
-    environment: production
     needs: build
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
