@@ -19,4 +19,5 @@ set -u # or set -o nounset
 : "$DATABASE_URL"
 
 az aks get-credentials --resource-group LibraryMicroservice --name LibraryMicroservice
-envsubst < ./scripts/kubernetes/deploy.yaml | kubectl apply -f -
+
+envsubst < ./scripts/kubernetes/deployment.yaml | kubectl apply -f -
