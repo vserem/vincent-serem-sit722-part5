@@ -97,19 +97,31 @@ jobs:
       - name: Get ACR Credentials
         id: acr_creds
         run: |
-          echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)"
+          echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
         # echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
         # echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    environment: production
 
-      # Trigger deployment workflow
-      - name: Trigger Deployment Workflow
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const result = await github.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'deploy.yml',
-              ref: 'main'
-            });
-            console.log(result);
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Building Images
+        run: |
+          echo "CONTAINER_REGISTRY = ${{env.CONTAINER_REGISTRY}}"
+  deploy:
+    name: "Deploy"
+    runs-on: ubuntu-latest
+    environment: production
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Deploy
+        run: echo "Deploying to Azure"
