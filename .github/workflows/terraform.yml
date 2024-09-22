@@ -101,14 +101,6 @@ jobs:
           gh secret set REGISTRY_UN --body "$acr_username"
           gh secret set REGISTRY_PW --body "$acr_password"
 
-      # Capture Terraform Output for ACR Credentials
-      - name: Get ACR Credentials
-        id: acr_creds
-        run: |
-          echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
-          echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
-          echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
-
   build:
     name: "Build"
     runs-on: ubuntu-latest
@@ -124,18 +116,8 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set Credentials
-        run: |
-          acr_registry=(az acr list --query [0].loginServer)
-          echo "VERSION=${{github.sha}}" >> $GITHUB_ENV
-          echo "CONTAINER_REGISTRY=$acr_registry" >> $GITHUB_ENV
-          echo "Getting Set variables...."
-          echo "${{env.CONTAINER_REGISTRY}}"
-          echo "${{env.VERSION}}"
-          echo "${{vars}}"
-
       - name: Authenticate Container Registry
-        run: az acr login --name $CONTAINER_REGISTRY
+        run: az acr login --name ${{secrets.CONTAINER_REGISTRY}}
 
       - name: Building Images
         run: |
