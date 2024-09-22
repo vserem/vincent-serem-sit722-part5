@@ -9,6 +9,15 @@ terraform {
   }
 
   required_version = ">= 1.5.6"
+  cloud {
+
+    organization = "Serem"
+
+    workspaces {
+      name = "LibraryMicroservice"
+    }
+  }
+
 }
 
 provider "azurerm" {
