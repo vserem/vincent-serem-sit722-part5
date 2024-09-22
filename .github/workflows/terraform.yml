@@ -125,6 +125,7 @@ jobs:
           echo "Getting Set variables...."
           echo "${{CONTAINER_REGISTRY}}"
           echo "${{VERSION}}"
+          echo "${{vars}}"
 
       - name: Authenticate Container Registry
         run: az acr login --name $CONTAINER_REGISTRY
