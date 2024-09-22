@@ -90,8 +90,8 @@ jobs:
 
         # On push to "main", build or change infrastructure according to Terraform configuration files
         # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve -input=false
 
       # Capture Terraform Output for ACR Credentials
       - name: Get ACR Credentials
@@ -116,13 +116,20 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Set Credentials
+        run: |
+          echo "VERSION=${{github.sha}}" >> $GITHUB_ENV
+          echo "CONTAINER_REGISTRY=$(az acr list --query [0].loginServer)" >> $GITHUB_ENV
+          echo "Getting Set variables...."
+          echo "$CONTAINER_REGISTRY"
+          echo "$VERSION"
+
+      - name: Authenticate Container Registry
+        run: az acr login --name $CONTAINER_REGISTRY
 
       - name: Building Images
-        env:
-          VERSION: ${{github.sha}}
-          CONTAINER_REGISTRY: $(az acr list --query [0].loginServer)
         run: |
-          echo "CONTAINER_REGISTRY = $CONTAINER_REGISTRY"
+          echo "CONTAINER_REGISTRY = $CONTAINER_REGISTRY" 
           bash ./scripts/build-image.sh
 
   deploy:
