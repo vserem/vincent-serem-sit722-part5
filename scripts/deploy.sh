@@ -16,5 +16,7 @@
 set -u # or set -o nounset
 : "$CONTAINER_REGISTRY"
 : "$VERSION"
+: "$DATABASE_URL"
 
+az aks get-credentials --resource-group LibraryMicroservice --name LibraryMicroservice
 envsubst < ./scripts/kubernetes/deploy.yaml | kubectl apply -f -
