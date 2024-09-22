@@ -83,23 +83,6 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      # Refresh the Terraform state to reflect actual infrastructure
-      - name: Terraform Refresh
-        run: terraform refresh
-
-      # Import the existing Azure Resources into Terraform state
-      # - name: Import Resources
-      #   run: |
-      #     terraform import azurerm_resource_group.deakinuni "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/LibraryMicroservice"
-      #     terraform import azurerm_kubernetes_cluster.cluster "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/LibraryMicroservice/providers/Microsoft.ContainerService/managedClusters/LibraryMicroservice"
-      #     terraform import azurerm_container_registry.container_registry "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/LibraryMicroservice/providers/Microsoft.ContainerRegistry/registries/LibraryMicroservice"
-      #     terraform import azurerm_role_assignment.role_assignment "/subscriptions/4823b134-9c7a-4610-9248-d6510a327dff/providers/Microsoft.Authorization/roleAssignments/16b44033-1000-45d5-9b85-a1de42b9228b"
-      #   continue-on-error: true
-
-      # Checks that all Terraform configuration files adhere to a canonical format
-      - name: Terraform Format
-        run: terraform fmt -check
-
       # Generates an execution plan for Terraform
       - name: Terraform Plan
         run: terraform plan -input=false
@@ -113,9 +96,9 @@ jobs:
       - name: Get ACR Credentials
         id: acr_creds
         run: |
-          echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
-          echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
-          echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
+          echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
+        # echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
+        # echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
 
       # Trigger deployment workflow
       - name: Trigger Deployment Workflow
