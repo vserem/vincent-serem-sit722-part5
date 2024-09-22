@@ -96,7 +96,7 @@ jobs:
       - name: Get ACR Credentials
         id: acr_creds
         run: |
-          echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
+          echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)"
         # echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
         # echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
 
